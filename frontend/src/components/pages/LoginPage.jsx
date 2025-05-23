@@ -1,3 +1,14 @@
+/**
+ * @file LoginPage.jsx
+ * 
+ * This file contains the LoginPage component, which is used to display the login form.
+ * 
+ * @author teshan_kalhara
+ * @created 5/5/2025
+ * @updated 5/5/2025
+ *  
+ */
+
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import ApiService from "../../services/ApiService"
