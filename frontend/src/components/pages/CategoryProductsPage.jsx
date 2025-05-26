@@ -9,7 +9,7 @@
  */
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ApiService from "../../service/ApiService";
+import ApiService from "../../services/ApiService";
 import ProductList from "../common/ProductList";
 import Pagination from "../common/Pagination";
 
