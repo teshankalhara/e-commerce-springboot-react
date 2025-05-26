@@ -5,14 +5,14 @@
  * 
  * @author teshan_kalhara
  * @created 5/23/2025
- * @updated 5/23/2025
+ * @updated 5/26/2025
  * 
  */
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import ApiService from "../../service/ApiService";
+import ApiService from "../../services/ApiService";
 
 const ProductDetailsPage = () => {
   const { productId } = useParams();

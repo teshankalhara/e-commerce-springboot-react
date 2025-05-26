@@ -5,13 +5,13 @@
  * 
  * @author teshan_kalhara
  * @created 5/23/2025
- * @updated 5/23/2025
+ * @updated 5/26/2025
  * 
  */
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ApiService from "../../service/ApiService";
+import ApiService from "../../services/ApiService";
 import Pagination from "../common/Pagination";
 
 const ProfilePage = () => {

@@ -9,7 +9,7 @@
  */
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ApiService from "../../service/ApiService";
+import ApiService from "../../services/ApiService";
 import { useCart } from "../context/CartContext";
 
 const CartPage = () => {
