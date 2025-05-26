@@ -9,6 +9,7 @@ package com.example.ecommerce.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +50,7 @@ public class JwtUtils {
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_IN_MILLISEC))
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS256) // Explicit algorithm
                 .compact();
     }
 
