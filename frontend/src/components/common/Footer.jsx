@@ -12,7 +12,7 @@ import { NavLink } from "react-router-dom"
 
 const Footer = () => {
     return (
-        <footer className="fixed bottom-0 w-full bg-gray-800 text-white text-center py-5 z-50">
+        <footer className="bottom-0 w-full bg-gray-800 text-white text-center py-5 z-50 mt-10">
             <div className="flex justify-center mb-3 flex-wrap gap-6 text-sm font-semibold">
                 <NavLink to="/" className="hover:text-gray-300">About Us</NavLink>
                 <NavLink to="/" className="hover:text-gray-300">Contact Us</NavLink>
