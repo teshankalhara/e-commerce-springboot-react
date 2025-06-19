@@ -5,11 +5,11 @@
  * 
  * @author teshan_kalhara
  * @created 5/5/2025
- * @updated 5/5/2025
+ * @updated 6/20/2025
  */
 import React, { useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
-import ApiService from "../../service/ApiService"
+import ApiService from "../../services/ApiService"
 
 const Navbar = () => {
     const [searchValue, setSearchValue] = useState("")
