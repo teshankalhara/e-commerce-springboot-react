@@ -7,9 +7,9 @@
  * @updated 6/23/2025
  */
 
-import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import ApiService from "../../services/ApiService";
+import React, { useState } from "react"
+import { NavLink, useNavigate } from "react-router-dom"
+import ApiService from "../../services/ApiService"
 import {
     Home,
     LayoutGrid,
@@ -19,61 +19,73 @@ import {
     Shield,
     ShoppingCart,
     Search,
-} from "lucide-react";
+} from "lucide-react"
 
 const Navbar = () => {
-    const [searchValue, setSearchValue] = useState("");
-    const navigate = useNavigate();
+    const [searchValue, setSearchValue] = useState("")
+    const navigate = useNavigate()
 
-    const isAdmin = ApiService.isAdmin();
-    const isAuthenticated = ApiService.isAuthenticated();
+    const isAdmin = ApiService.isAdmin()
+    const isAuthenticated = ApiService.isAuthenticated()
 
-    const handleSearchChange = (e) => setSearchValue(e.target.value);
+    const handleSearchChange = (e) => setSearchValue(e.target.value)
 
     const handleSearchSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         if (searchValue.trim()) {
-            navigate(`/?search=${encodeURIComponent(searchValue)}`);
+            navigate(`/?search=${encodeURIComponent(searchValue)}`)
         }
-    };
+    }
 
     const handleLogout = () => {
         if (window.confirm("Are you sure you want to logout?")) {
-            ApiService.logout();
-            setTimeout(() => navigate("/login"), 500);
+            ApiService.logout()
+            setTimeout(() => navigate("/login"), 500)
         }
-    };
+    }
 
     return (
-        <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/20 border-b border-white/20 shadow-sm">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-3">
+        <nav className="sticky top-0 z-50 w-full bg-white/20 backdrop-blur-xl border-b border-white/30 shadow-md">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4">
 
                 {/* Logo */}
-                <NavLink to="/" className="text-2xl font-bold tracking-tight text-gray-900 hover:text-gray-700 transition">
+                <NavLink
+                    to="/"
+                    className="text-2xl font-bold tracking-tight text-gray-900 hover:text-gray-700 transition select-none drop-shadow-sm"
+                >
                     Clothez
                 </NavLink>
 
-                {/* Search */}
+                {/* Search Bar */}
                 <form
                     onSubmit={handleSearchSubmit}
-                    className="flex w-full max-w-lg bg-white/90 rounded-xl overflow-hidden backdrop-blur-sm shadow-inner focus-within:ring-2 focus-within:ring-gray-400"
+                    className="flex w-full max-w-lg bg-white/25 backdrop-blur-xl border border-white/30 rounded-3xl shadow-md overflow-hidden focus-within:ring-2 focus-within:ring-white/60 transition"
                 >
                     <input
-                        type="text"
+                        type="search"
                         value={searchValue}
                         onChange={handleSearchChange}
                         placeholder="Search products..."
-                        className="w-full px-4 py-2 text-gray-900 bg-transparent focus:outline-none placeholder-gray-500"
+                        className="flex-grow px-5 py-3 bg-transparent text-gray-900 placeholder-gray-500 text-base font-medium focus:outline-none focus-visible:outline-none"
+                        spellCheck="false"
+                        autoComplete="off"
                     />
                     <button
                         type="submit"
-                        className="bg-gray-800 text-white px-4 hover:bg-gray-900 transition"
+                        aria-label="Search"
+                        className="flex items-center justify-center px-5 py-3  bg-white/40 
+                        backdrop-blur-md border border-white/40 
+                        rounded-3xl text-gray-900 shadow-sm transition 
+                        hover:bg-white/70 hover:shadow-lg hover:scale-[1.05] 
+                        active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 
+                        focus:ring-white/70  focus:ring-offset-1 focus:ring-offset-gray-100"
                     >
-                        <Search className="h-5 w-5" />
+                        <Search className="w-6 h-6" />
                     </button>
                 </form>
 
-                {/* Navigation Links with Icons */}
+
+                {/* Nav Links */}
                 <div className="flex flex-wrap items-center justify-center md:justify-end gap-5 text-sm font-medium text-gray-900">
 
                     <NavLink to="/" className="flex items-center gap-2 hover:text-gray-700 transition">
@@ -122,7 +134,7 @@ const Navbar = () => {
                 </div>
             </div>
         </nav>
-    );
-};
+    )
+}
 
-export default Navbar;
+export default Navbar
