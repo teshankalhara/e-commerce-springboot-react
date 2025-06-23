@@ -45,9 +45,8 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="sticky top-0 z-50 w-full bg-white/20 backdrop-blur-xl border-b border-white/30 shadow-md">
+        <nav className="sticky top-0 z-50 w-full bg-white/20 backdrop-blur-xl border-b border-white/30 shadow-md rounded-b-3xl">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4">
-
                 {/* Logo */}
                 <NavLink
                     to="/"
