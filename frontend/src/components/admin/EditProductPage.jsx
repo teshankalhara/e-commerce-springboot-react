@@ -5,7 +5,7 @@
  * 
  * @author teshan_kalhara
  * @created 6/14/2025
- * @updated 6/23/2025
+ * @updated 6/24/2025
  */
 import React, { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
@@ -77,7 +77,9 @@ const EditProductPage = () => {
         <input
           type="file"
           onChange={handleImageChange}
-          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-900 transition"
+          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border file:border-white/40 
+            file:text-sm file:font-semibold file:bg-white/20 file:text-gray-900 
+            file:backdrop-blur-md transition hover:file:bg-white/30 hover:file:border-white/60"
         />
 
         {imageUrl && (
@@ -127,7 +129,7 @@ const EditProductPage = () => {
 
         <button
           type="submit"
-          className="w-full py-4 rounded-2xl bg-gray-800 text-white font-semibold text-lg shadow-md transition hover:bg-gray-900 flex items-center justify-center active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-gray-700/60"
+          className="w-full py-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 font-semibold text-lg shadow-md transition hover:bg-white/40 hover:border-white/40 hover:shadow-lg flex items-center justify-center active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-gray-100"
         >
           Update Product
         </button>

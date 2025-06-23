@@ -5,7 +5,7 @@
  * 
  * @author teshan_kalhara
  * @created 6/14/2025
- * @updated 6/23/2025
+ * @updated 6/24/2025
  */
 import React, { useState, useEffect } from "react"
 import ApiService from "../../services/ApiService"
@@ -50,13 +50,8 @@ const EditCategory = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-white px-6 py-12">
             <div
-                className="
-          w-full max-w-xl p-10
-          bg-white/30 backdrop-blur-2xl
-          border border-white/30
-          rounded-3xl
-          shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]
-        "
+                className="w-full max-w-xl p-10 bg-white/30 backdrop-blur-2xl border 
+                border-white/30 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]"
             >
                 <h2 className="text-center text-4xl font-bold text-gray-900 mb-10 select-none drop-shadow">
                     Edit Category
