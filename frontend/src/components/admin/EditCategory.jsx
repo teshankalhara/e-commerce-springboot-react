@@ -5,74 +5,83 @@
  * 
  * @author teshan_kalhara
  * @created 6/14/2025
- * @updated 6/14/2025
+ * @updated 6/24/2025
  */
-
-import React, { useState, useEffect } from "react";
-import ApiService from "../../services/ApiService";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react"
+import ApiService from "../../services/ApiService"
+import { useNavigate, useParams } from "react-router-dom"
+import toast from "react-hot-toast"
 
 const EditCategory = () => {
-    const { categoryId } = useParams();
-    const [name, setName] = useState('');
-    const [message, setMessage] = useState('');
-    const navigate = useNavigate();
+    const { categoryId } = useParams()
+    const [name, setName] = useState("")
+    const navigate = useNavigate()
 
     useEffect(() => {
-        fetchCategory(categoryId);
-    }, [categoryId]);
+        fetchCategory()
+    }, [categoryId])
 
     const fetchCategory = async () => {
         try {
-            const response = await ApiService.getCategoryById(categoryId);
-            setName(response.category.name);
+            const response = await ApiService.getCategoryById(categoryId)
+            setName(response.category.name)
         } catch (error) {
-            setMessage(error.response?.data?.message || error.message || "Failed to get category by ID");
-            setTimeout(() => {
-                setMessage('');
-            }, 3000);
+            toast.error(
+                error.response?.data?.message || error.message || "Failed to get category"
+            )
         }
-    };
+    }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
         try {
-            const response = await ApiService.updateCategory(categoryId, { name });
+            const response = await ApiService.updateCategory(categoryId, { name })
             if (response.status === 200) {
-                setMessage(response.message);
-                setTimeout(() => {
-                    setMessage('');
-                    navigate("/admin/categories");
-                }, 3000);
+                toast.success("Category updated successfully")
+                setTimeout(() => navigate("/admin/categories"), 1500)
             }
         } catch (error) {
-            setMessage(error.response?.data?.message || error.message || "Failed to save category");
+            toast.error(
+                error.response?.data?.message || error.message || "Failed to update category"
+            )
         }
-    };
+    }
 
     return (
-        <div className="max-w-xl mx-auto mt-12 p-6 border border-gray-300 rounded-md">
-            {message && (
-                <p className="mb-4 text-center text-red-600 font-semibold">{message}</p>
-            )}
-            <form onSubmit={handleSubmit} className="flex flex-col">
-                <h2 className="text-2xl font-bold mb-4">Edit Category</h2>
-                <input
-                    type="text"
-                    placeholder="Category Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="px-4 py-2 mb-4 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-orange-400"
-                />
-                <button
-                    type="submit"
-                    className="bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold py-3 px-6 rounded-md transition-colors duration-200"
-                >
-                    Update
-                </button>
-            </form>
-        </div>
-    );
-};
+        <div className="min-h-screen flex items-center justify-center bg-white px-6 py-12">
+            <div
+                className="w-full max-w-xl p-10 bg-white/30 backdrop-blur-2xl border 
+                border-white/30 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]"
+            >
+                <h2 className="text-center text-4xl font-bold text-gray-900 mb-10 select-none drop-shadow">
+                    Edit Category
+                </h2>
 
-export default EditCategory;
+                <form onSubmit={handleSubmit} className="space-y-8">
+                    <div className="flex flex-col">
+                        <label className="mb-2 font-medium text-gray-800 select-none">
+                            Category Name
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Enter category name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            className="w-full p-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 placeholder-gray-500 shadow-inner focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full py-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 font-semibold text-lg shadow-md transition hover:bg-white/40 hover:border-white/40 hover:shadow-lg flex items-center justify-center active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-gray-100"
+                    >
+                        Update Category
+                    </button>
+                </form>
+            </div>
+        </div>
+    )
+}
+
+export default EditCategory
