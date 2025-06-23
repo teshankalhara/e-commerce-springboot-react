@@ -12,6 +12,13 @@ import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import ApiService from "../../services/ApiService"
 import Pagination from "../common/Pagination"
+import {
+  Home,
+  Building,
+  MapPin,
+  Mail,
+  Globe
+} from "lucide-react"
 
 const ProfilePage = () => {
   const [userInfo, setUserInfo] = useState(null)
@@ -120,7 +127,7 @@ const ProfilePage = () => {
                 </h3>
                 <button
                   onClick={handleAddressClick}
-                  className="w-[120px] py-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 font-semibold text-sm shadow-md transition hover:bg-white/40 hover:border-white/40 hover:shadow-lg flex items-center justify-center active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-gray-100"
+                  className="w-[140px] py-3 rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 text-gray-900 font-semibold text-sm shadow-md transition hover:bg-white/30 hover:border-white/50 hover:shadow-xl active:scale-95 active:brightness-95 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-gray-100"
                 >
                   {userInfo.address ? "Edit Address" : "Add Address"}
                 </button>
@@ -128,20 +135,35 @@ const ProfilePage = () => {
 
               {userInfo.address ? (
                 <div
-                  className="
-                    bg-white/25 backdrop-blur-xl border border-white/40 rounded-3xl
-                    px-8 py-6 shadow-[inset_0_3px_10px_rgba(255,255,255,0.3)]
-                    space-y-2 text-gray-800 select-text
-                  "
+                  className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl px-8 py-6 space-y-4 shadow-[inset_0_3px_10px_rgba(255,255,255,0.3),0_10px_30px_rgba(0,0,0,0.08)] hover:shadow-[inset_0_5px_15px_rgba(255,255,255,0.4),0_16px_40px_rgba(0,0,0,0.12)] transition-all duration-300 text-gray-800 text-[15px] sm:text-base"
                 >
-                  <p><span className="font-medium">Street:</span> {userInfo.address.street}</p>
-                  <p><span className="font-medium">City:</span> {userInfo.address.city}</p>
-                  <p><span className="font-medium">State:</span> {userInfo.address.state}</p>
-                  <p><span className="font-medium">Zip Code:</span> {userInfo.address.zipCode}</p>
-                  <p><span className="font-medium">Country:</span> {userInfo.address.country}</p>
+                  <div className="flex items-start gap-3">
+                    <Home size={18} className="text-gray-700 mt-1" />
+                    <p><span className="font-medium text-gray-700">Street:</span> {userInfo.address.street}</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Building size={18} className="text-gray-700 mt-1" />
+                    <p><span className="font-medium text-gray-700">City:</span> {userInfo.address.city}</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <MapPin size={18} className="text-gray-700 mt-1" />
+                    <p><span className="font-medium text-gray-700">State:</span> {userInfo.address.state}</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Mail size={18} className="text-gray-700 mt-1" />
+                    <p><span className="font-medium text-gray-700">Zip Code:</span> {userInfo.address.zipCode}</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Globe size={18} className="text-gray-700 mt-1" />
+                    <p><span className="font-medium text-gray-700">Country:</span> {userInfo.address.country}</p>
+                  </div>
                 </div>
               ) : (
-                <p className="text-gray-600 italic select-none">No Address information available</p>
+                <div
+                  className="bg-white/20 text-gray-600 italic px-6 py-4 rounded-2xl text-center border border-white/30 backdrop-blur-lg"
+                >
+                  No address information available
+                </div>
               )}
             </section>
 
