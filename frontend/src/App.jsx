@@ -22,12 +22,14 @@ import AddProductPage from './components/admin/AddProductPage';
 import EditProductPage from './components/admin/EditProductPage';
 import AdminOrdersPage from './components/admin/AdminOrderPage';
 import AdminOrderDetailsPage from './components/admin/AdminOrderDetailsPage';
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   return (
     <BrowserRouter>
     <CartProvider>
       <Navbar/>
+      <Toaster position="top-center" reverseOrder={false} />
         <Routes>
           {/* OUR ROUTES */}
           <Route exact path='/' element={<Home/>}/>
