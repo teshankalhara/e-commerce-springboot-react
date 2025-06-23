@@ -5,127 +5,135 @@
  * 
  * @author teshan_kalhara
  * @created 6/14/2025
- * @updated 6/14/2025
+ * @updated 6/23/2025
  */
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import ApiService from "../../services/ApiService";
+import React, { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import ApiService from "../../services/ApiService"
+import toast from "react-hot-toast"
 
 const EditProductPage = () => {
-    const { productId } = useParams();
-    const [image, setImage] = useState(null);
-    const [categories, setCategories] = useState([]);
-    const [categoryId, setCategoryId] = useState('');
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [message, setMessage] = useState('');
-    const [price, setPrice] = useState('');
-    const [imageUrl, setImageUrl] = useState(null);
-    const navigate = useNavigate();
+  const { productId } = useParams()
+  const [image, setImage] = useState(null)
+  const [categories, setCategories] = useState([])
+  const [categoryId, setCategoryId] = useState("")
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
+  const [price, setPrice] = useState("")
+  const [imageUrl, setImageUrl] = useState(null)
+  const navigate = useNavigate()
 
-    useEffect(() => {
-        ApiService.getAllCategory().then((res) => setCategories(res.categoryList));
+  useEffect(() => {
+    ApiService.getAllCategory().then((res) => setCategories(res.categoryList))
 
-        if (productId) {
-            ApiService.getProductById(productId).then((response) => {
-                setName(response.product.name);
-                setDescription(response.product.description);
-                setPrice(response.product.price);
-                setCategoryId(response.product.categoryId);
-                setImageUrl(response.product.imageUrl);
-            });
-        }
-    }, [productId]);
+    if (productId) {
+      ApiService.getProductById(productId).then((res) => {
+        setName(res.product.name)
+        setDescription(res.product.description)
+        setPrice(res.product.price)
+        setCategoryId(res.product.categoryId)
+        setImageUrl(res.product.imageUrl)
+      })
+    }
+  }, [productId])
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        setImage(file);
-        setImageUrl(URL.createObjectURL(file));
-    };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    setImage(file)
+    setImageUrl(URL.createObjectURL(file))
+  }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const formData = new FormData();
-            if (image) {
-                formData.append("image", image);
-            }
-            formData.append("productId", productId);
-            formData.append("categoryId", categoryId);
-            formData.append("name", name);
-            formData.append("description", description);
-            formData.append("price", price);
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const formData = new FormData()
+      if (image) formData.append("image", image)
+      formData.append("productId", productId)
+      formData.append("categoryId", categoryId)
+      formData.append("name", name)
+      formData.append("description", description)
+      formData.append("price", price)
 
-            const response = await ApiService.updateProduct(formData);
-            if (response.status === 200) {
-                setMessage(response.message);
-                setTimeout(() => {
-                    setMessage("");
-                    navigate("/admin/products");
-                }, 3000);
-            }
-        } catch (error) {
-            setMessage(error.response?.data?.message || error.message || "Unable to update product");
-        }
-    };
+      const res = await ApiService.updateProduct(formData)
+      if (res.status === 200) {
+        toast.success("Product updated successfully")
+        setTimeout(() => navigate("/admin/products"), 1500)
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || "Failed to update product")
+    }
+  }
 
-    return (
-        <form onSubmit={handleSubmit} className="flex flex-col w-1/2 mx-auto mb-64 p-4">
-            <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
-            {message && <div className="text-red-600 font-medium mb-3">{message}</div>}
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white px-6 py-12">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-xl p-10 bg-white/30 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] space-y-6"
+      >
+        <h2 className="text-center text-4xl font-bold text-gray-900 mb-4 select-none drop-shadow">
+          Edit Product
+        </h2>
 
-            <input
-                type="file"
-                onChange={handleImageChange}
-                className="mb-3"
-            />
+        <input
+          type="file"
+          onChange={handleImageChange}
+          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-900 transition"
+        />
 
-            {imageUrl && (
-                <img src={imageUrl} alt={name} className="max-w-[100px] mb-3" />
-            )}
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt={name}
+            className="max-w-[120px] mx-auto rounded-lg shadow"
+          />
+        )}
 
-            <select
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                className="mb-3 p-2 border border-gray-300 rounded text-base"
-            >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                    <option value={cat.id} key={cat.id}>{cat.name}</option>
-                ))}
-            </select>
+        <select
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          className="w-full p-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 shadow-inner focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition"
+        >
+          <option value="">Select Category</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
 
-            <input
-                type="text"
-                placeholder="Product name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mb-3 p-2 border border-gray-300 rounded text-base"
-            />
+        <input
+          type="text"
+          placeholder="Product Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 placeholder-gray-500 shadow-inner focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition"
+        />
 
-            <textarea
-                placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="mb-3 p-2 border border-gray-300 rounded text-base"
-            />
+        <textarea
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={4}
+          className="w-full p-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 placeholder-gray-500 shadow-inner resize-none focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition"
+        />
 
-            <input
-                type="number"
-                placeholder="Price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="mb-3 p-2 border border-gray-300 rounded text-base"
-            />
+        <input
+          type="number"
+          placeholder="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="w-full p-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 placeholder-gray-500 shadow-inner focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition"
+        />
 
-            <button
-                type="submit"
-                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded transition-colors duration-200"
-            >
-                Update
-            </button>
-        </form>
-    );
-};
+        <button
+          type="submit"
+          className="w-full py-4 rounded-2xl bg-gray-800 text-white font-semibold text-lg shadow-md transition hover:bg-gray-900 flex items-center justify-center active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-gray-700/60"
+        >
+          Update Product
+        </button>
+      </form>
+    </div>
+  )
+}
 
-export default EditProductPage;
+export default EditProductPage
