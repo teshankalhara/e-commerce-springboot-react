@@ -5,7 +5,7 @@
  * 
  * @author teshan_kalhara
  * @created 6/10/2025
- * @updated 6/23/2025
+ * @updated 6/24/2025
  */
 
 import React, { useState, useEffect } from "react"
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom"
 import Pagination from "../common/Pagination"
 import ApiService from "../../services/ApiService"
 import toast from "react-hot-toast"
+import { Edit2, Trash2 } from "lucide-react"
 
 const AdminProductPage = () => {
   const navigate = useNavigate()
@@ -89,16 +90,27 @@ const AdminProductPage = () => {
                     {product.name}
                   </span>
                   <div className="flex space-x-2">
+
                     <button
                       onClick={() => handleEdit(product.id)}
-                      className="px-4 py-2 rounded-xl bg-gray-800 text-white font-medium hover:bg-gray-900 transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-700"
+                      className="px-4 py-2 rounded-3xl
+                        bg-white/30 backdrop-blur-xl border border-white/40 text-gray-900 font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_10px_30px_rgba(0,0,0,0.05)]
+                        hover:bg-white/50 hover:shadow-[inset_0_2px_10px_rgba(255,255,255,0.9),0_12px_40px_rgba(0,0,0,0.08)] transition active:scale-95 active:brightness-90
+                        focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-gray-100 flex items-center gap-2"
                     >
+                      <Edit2 size={18} />
                       Edit
                     </button>
+
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="px-4 py-2 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400"
+                      className="px-4 py-2 rounded-3xl bg-red-500/30 backdrop-blur-xl border   
+                          border-red-500/50 text-red-700 font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_10px_30px_rgba(139,0,0,0.06)]
+                          hover:bg-red-500/50 hover:shadow-[inset_0_2px_10px_rgba(255,255,255,0.7),0_12px_40px_rgba(139,0,0,0.1)] transition active:scale-95 active:brightness-90
+                          focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-100
+                          flex items-center gap-2"
                     >
+                      <Trash2 size={18} />
                       Delete
                     </button>
                   </div>
