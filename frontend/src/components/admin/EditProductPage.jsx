@@ -24,18 +24,28 @@ const EditProductPage = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    ApiService.getAllCategory().then((res) => setCategories(res.categoryList))
+    const fetchData = async () => {
+      try {
+        const catRes = await ApiService.getAllCategory()
+        setCategories(catRes.categoryList)
 
-    if (productId) {
-      ApiService.getProductById(productId).then((res) => {
-        setName(res.product.name)
-        setDescription(res.product.description)
-        setPrice(res.product.price)
-        setCategoryId(res.product.categoryId)
-        setImageUrl(res.product.imageUrl)
-      })
+        if (productId) {
+          const prodRes = await ApiService.getProductById(productId)
+          setName(prodRes.product.name)
+          setDescription(prodRes.product.description)
+          setPrice(prodRes.product.price)
+          setCategoryId(String(prodRes.product.categoryId))
+          setImageUrl(prodRes.product.imageUrl)
+        }
+      } catch (err) {
+        toast.error(err.response?.data?.message || err.message || "Failed to load data")
+      }
     }
+
+    fetchData()
   }, [productId])
+
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -97,9 +107,7 @@ const EditProductPage = () => {
         >
           <option value="">Select Category</option>
           {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
+            <option key={cat.id} value={String(cat.id)}>{cat.name}</option>
           ))}
         </select>
 
