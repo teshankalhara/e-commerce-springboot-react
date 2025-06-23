@@ -1,97 +1,128 @@
 /**
  * @file Navbar.jsx
+ * @description Navigation bar component for the Clothez application.
  * 
- * This file contains the Navbar component which is responsible for rendering the navigation bar of the application.
- * 
- * @author teshan_kalhara
+ * @author teshan
  * @created 5/5/2025
- * @updated 6/20/2025
+ * @updated 6/23/2025
  */
-import React, { useState } from "react"
-import { NavLink, useNavigate } from "react-router-dom"
-import ApiService from "../../services/ApiService"
+
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import ApiService from "../../services/ApiService";
+import {
+    Home,
+    LayoutGrid,
+    User,
+    LogIn,
+    LogOut,
+    Shield,
+    ShoppingCart,
+    Search,
+} from "lucide-react";
 
 const Navbar = () => {
-    const [searchValue, setSearchValue] = useState("")
+    const [searchValue, setSearchValue] = useState("");
     const navigate = useNavigate();
 
     const isAdmin = ApiService.isAdmin();
-    const isAuthenticated = ApiService.isAuthenticated()
+    const isAuthenticated = ApiService.isAuthenticated();
 
-    const handleSearchChange = (e) => {
-        setSearchValue(e.target.value)
-    }
+    const handleSearchChange = (e) => setSearchValue(e.target.value);
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
-        navigate(`/?search=${searchValue}`)
-    }
+        if (searchValue.trim()) {
+            navigate(`/?search=${encodeURIComponent(searchValue)}`);
+        }
+    };
 
     const handleLogout = () => {
-        const confirmLogout = window.confirm("Are you sure you want to logout?");
-        if (confirmLogout) {
+        if (window.confirm("Are you sure you want to logout?")) {
             ApiService.logout();
-            setTimeout(() => {
-                navigate("/login")
-            }, 500);
+            setTimeout(() => navigate("/login"), 500);
         }
-    }
+    };
 
     return (
-        <nav className="flex flex-col md:flex-row justify-between items-center bg-orange-500 p-4 text-white gap-4">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-                <NavLink to="/">
-                    {/* <img src="/" alt="Clothez" className="h-10" /> */}
-                    <h1 className="text-2xl font-bold">Clothez</h1>
+        <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/20 border-b border-white/20 shadow-sm">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-3">
+
+                {/* Logo */}
+                <NavLink to="/" className="text-2xl font-bold tracking-tight text-gray-900 hover:text-gray-700 transition">
+                    Clothez
                 </NavLink>
-            </div>
 
-            {/* Search */}
-            <form 
-                onSubmit={handleSearchSubmit} 
-                className="flex items-center w-full max-w-xl"
-            >
-                <input
-                    type="text"
-                    placeholder="Search products"
-                    value={searchValue}
-                    onChange={handleSearchChange}
-                    className="flex-grow px-4 py-2 rounded-l-md border-none focus:outline-none text-black"
-                />
-                <button
-                    type="submit"
-                    className="bg-white text-orange-500 font-bold px-4 py-2 rounded-r-md hover:bg-gray-100"
+                {/* Search */}
+                <form
+                    onSubmit={handleSearchSubmit}
+                    className="flex w-full max-w-lg bg-white/90 rounded-xl overflow-hidden backdrop-blur-sm shadow-inner focus-within:ring-2 focus-within:ring-gray-400"
                 >
-                    Search
-                </button>
-            </form>
-
-            {/* Links */}
-            <div className="flex flex-wrap justify-center md:justify-end items-center gap-4 text-sm font-bold">
-                <NavLink to="/" className="hover:text-gray-200">Home</NavLink>
-                <NavLink to="/categories" className="hover:text-gray-200">Categories</NavLink>
-                {isAuthenticated && (
-                    <NavLink to="/profile" className="hover:text-gray-200">My Account</NavLink>
-                )}
-                {isAdmin && (
-                    <NavLink to="/admin" className="hover:text-gray-200">Admin</NavLink>
-                )}
-                {!isAuthenticated && (
-                    <NavLink to="/login" className="hover:text-gray-200">Login</NavLink>
-                )}
-                {isAuthenticated && (
+                    <input
+                        type="text"
+                        value={searchValue}
+                        onChange={handleSearchChange}
+                        placeholder="Search products..."
+                        className="w-full px-4 py-2 text-gray-900 bg-transparent focus:outline-none placeholder-gray-500"
+                    />
                     <button
-                        onClick={handleLogout}
-                        className="hover:text-red-300"
+                        type="submit"
+                        className="bg-gray-800 text-white px-4 hover:bg-gray-900 transition"
                     >
-                        Logout
+                        <Search className="h-5 w-5" />
                     </button>
-                )}
-                <NavLink to="/cart" className="hover:text-gray-200">Cart</NavLink>
+                </form>
+
+                {/* Navigation Links with Icons */}
+                <div className="flex flex-wrap items-center justify-center md:justify-end gap-5 text-sm font-medium text-gray-900">
+
+                    <NavLink to="/" className="flex items-center gap-2 hover:text-gray-700 transition">
+                        <Home size={18} />
+                        <span>Home</span>
+                    </NavLink>
+
+                    <NavLink to="/categories" className="flex items-center gap-2 hover:text-gray-700 transition">
+                        <LayoutGrid size={18} />
+                        <span>Categories</span>
+                    </NavLink>
+
+                    {isAuthenticated && (
+                        <NavLink to="/profile" className="flex items-center gap-2 hover:text-gray-700 transition">
+                            <User size={18} />
+                            <span>My Account</span>
+                        </NavLink>
+                    )}
+
+                    {isAdmin && (
+                        <NavLink to="/admin" className="flex items-center gap-2 hover:text-gray-700 transition">
+                            <Shield size={18} />
+                            <span>Admin</span>
+                        </NavLink>
+                    )}
+
+                    {!isAuthenticated ? (
+                        <NavLink to="/login" className="flex items-center gap-2 hover:text-gray-700 transition">
+                            <LogIn size={18} />
+                            <span>Login</span>
+                        </NavLink>
+                    ) : (
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-2 hover:text-red-600 transition"
+                        >
+                            <LogOut size={18} />
+                            <span>Logout</span>
+                        </button>
+                    )}
+
+                    <NavLink to="/cart" className="flex items-center gap-2 hover:text-gray-700 transition">
+                        <ShoppingCart size={18} />
+                        <span>Cart</span>
+                    </NavLink>
+                </div>
             </div>
         </nav>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;
