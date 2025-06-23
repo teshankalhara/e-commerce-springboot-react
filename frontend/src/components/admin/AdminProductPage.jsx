@@ -5,7 +5,7 @@
  * 
  * @author teshan_kalhara
  * @created 6/10/2025
- * @updated 6/10/2025
+ * @updated 6/23/2025
  */
 
 import React, { useState, useEffect } from "react"
@@ -73,40 +73,48 @@ const AdminProductPage = () => {
           </button>
         </div>
 
-        <ul className="space-y-4">
-          {products.map((product) => (
-            <li
-              key={product.id}
-              className="flex justify-between items-center p-4 bg-white/40 backdrop-blur-md border border-white/20 rounded-2xl shadow-inner"
-            >
-              <span className="text-gray-900 font-medium flex-1">
-                {product.name}
-              </span>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(product.id)}
-                  className="px-4 py-2 rounded-xl bg-gray-800 text-white font-medium hover:bg-gray-900 transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-700"
+        {products.length === 0 ? (
+          <p className="text-center text-gray-700 italic py-20 select-none">
+            No products found. Please add new products.
+          </p>
+        ) : (
+          <>
+            <ul className="space-y-4">
+              {products.map((product) => (
+                <li
+                  key={product.id}
+                  className="flex justify-between items-center p-4 bg-white/40 backdrop-blur-md border border-white/20 rounded-2xl shadow-inner"
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className="px-4 py-2 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400"
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+                  <span className="text-gray-900 font-medium flex-1">
+                    {product.name}
+                  </span>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleEdit(product.id)}
+                      className="px-4 py-2 rounded-xl bg-gray-800 text-white font-medium hover:bg-gray-900 transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-700"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="px-4 py-2 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
 
-        <div className="mt-8 flex justify-center">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
-        </div>
+            <div className="mt-8 flex justify-center">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
