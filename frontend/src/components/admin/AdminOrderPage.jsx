@@ -5,159 +5,235 @@
  * 
  * @author teshan_kalhara
  * @created 6/14/2025
- * @updated 6/14/2025
+ * @updated 6/23/2025
  */
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Pagination from "../common/Pagination";
-import ApiService from "../../services/ApiService";
+import React, { useState, useEffect, useRef } from "react"
+import { useNavigate } from "react-router-dom"
+import Pagination from "../common/Pagination"
+import ApiService from "../../services/ApiService"
+import toast from "react-hot-toast"
 
-const OrderStatus = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED"];
+const OrderStatus = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED"]
 
 const AdminOrdersPage = () => {
-    const [orders, setOrders] = useState([]);
-    const [filteredOrders, setFilteredOrders] = useState([]);
-    const [statusFilter, setStatusFilter] = useState('');
-    const [searchStatus, setSearchStatus] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const [error, setError] = useState(null);
-    const itemsPerPage = 10;
+  const [orders, setOrders] = useState([])
+  const [filteredOrders, setFilteredOrders] = useState([])
+  const [statusFilter, setStatusFilter] = useState("")
+  const [searchStatus, setSearchStatus] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+  const [error, setError] = useState(null)
+  const itemsPerPage = 10
 
-    const navigate = useNavigate();
+  const navigate = useNavigate()
 
-    useEffect(() => {
-        fetchOrders();
-    }, [searchStatus, currentPage]);
+  // Ref to track if toast was shown for current error
+  const errorToastShown = useRef(false)
 
-    const fetchOrders = async () => {
-        try {
-            let response;
-            if (searchStatus) {
-                response = await ApiService.getAllOrderItemsByStatus(searchStatus);
-            } else {
-                response = await ApiService.getAllOrders();
-            }
-            const orderList = response.orderItemList || [];
+  // Reset toast shown flag when error changes or clears
+  useEffect(() => {
+    if (!error) {
+      errorToastShown.current = false
+    }
+  }, [error])
 
-            setTotalPages(Math.ceil(orderList.length / itemsPerPage));
-            setOrders(orderList);
-            setFilteredOrders(orderList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
-        } catch (error) {
-            setError(error.response?.data?.message || error.message || 'Unable to fetch orders');
-            setTimeout(() => {
-                setError('');
-            }, 3000);
-        }
-    };
+  useEffect(() => {
+    fetchOrders()
+  }, [searchStatus, currentPage])
 
-    const handleFilterChange = (e) => {
-        const filterValue = e.target.value;
-        setStatusFilter(filterValue);
-        setCurrentPage(1);
+  const fetchOrders = async () => {
+    try {
+      let response
+      if (searchStatus) {
+        response = await ApiService.getAllOrderItemsByStatus(searchStatus)
+      } else {
+        response = await ApiService.getAllOrders()
+      }
+      const orderList = response.orderItemList || []
 
-        if (filterValue) {
-            const filtered = orders.filter(order => order.status === filterValue);
-            setFilteredOrders(filtered.slice(0, itemsPerPage));
-            setTotalPages(Math.ceil(filtered.length / itemsPerPage));
-        } else {
-            setFilteredOrders(orders.slice(0, itemsPerPage));
-            setTotalPages(Math.ceil(orders.length / itemsPerPage));
-        }
-    };
+      setTotalPages(Math.ceil(orderList.length / itemsPerPage))
+      setOrders(orderList)
+      setFilteredOrders(orderList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage))
+      setError(null)
+    } catch (error) {
+      const msg = error.response?.data?.message || error.message || "Unable to fetch orders"
 
-    const handleSearchStatusChange = (e) => {
-        setSearchStatus(e.target.value);
-        setCurrentPage(1);
-    };
+      setError(msg)
+      if (!errorToastShown.current) {
+        toast.error(msg)
+        errorToastShown.current = true
+      }
+      // Optional: Clear error message after delay
+      setTimeout(() => {
+        setError(null)
+      }, 1000)
+    }
+  }
 
-    const handleOrderDetails = (id) => {
-        navigate(`/admin/order-details/${id}`);
-    };
+  const handleFilterChange = (e) => {
+    const filterValue = e.target.value
+    setStatusFilter(filterValue)
+    setCurrentPage(1)
 
-    return (
-        <div className="max-w-[1200px] mx-auto px-5 py-6 overflow-x-hidden">
-            <h2 className="text-3xl font-bold mb-6">Orders</h2>
+    if (filterValue) {
+      const filtered = orders.filter((order) => order.status === filterValue)
+      setFilteredOrders(filtered.slice(0, itemsPerPage))
+      setTotalPages(Math.ceil(filtered.length / itemsPerPage))
+    } else {
+      setFilteredOrders(orders.slice(0, itemsPerPage))
+      setTotalPages(Math.ceil(orders.length / itemsPerPage))
+    }
+  }
 
-            {error && <p className="text-red-600 mb-4">{error}</p>}
+  const handleSearchStatusChange = (e) => {
+    setSearchStatus(e.target.value)
+    setCurrentPage(1)
+  }
 
-            <div className="flex flex-wrap gap-6 mb-6 items-end">
-                <div className="flex flex-col gap-2">
-                    <label className="text-lg font-semibold">Filter By Status</label>
-                    <select
-                        className="px-3 py-2 text-sm border rounded"
-                        value={statusFilter}
-                        onChange={handleFilterChange}
-                    >
-                        <option value="">All</option>
-                        {OrderStatus.map(status => (
-                            <option key={status} value={status}>{status}</option>
-                        ))}
-                    </select>
-                </div>
+  const handleOrderDetails = (id) => {
+    navigate(`/admin/order-details/${id}`)
+  }
 
-                <div className="flex flex-col gap-2 ml-auto">
-                    <label className="text-lg font-semibold">Search By Status</label>
-                    <select
-                        className="px-3 py-2 text-sm border rounded"
-                        value={searchStatus}
-                        onChange={handleSearchStatusChange}
-                    >
-                        <option value="">All</option>
-                        {OrderStatus.map(status => (
-                            <option key={status} value={status}>{status}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
+  return (
+    <div className="min-h-screen bg-[rgba(255,255,255,0.15)] backdrop-blur-[40px] p-6 flex flex-col items-center">
+      <div className="w-full max-w-5xl rounded-3xl bg-white/20 backdrop-blur-xl border border-white/30 shadow-[0_4px_30px_rgba(255,255,255,0.3)] p-8">
+        <h2 className="text-4xl font-semibold text-gray-900 mb-8 select-none drop-shadow-lg">
+          Orders
+        </h2>
 
-            <div className="overflow-x-auto">
-                <table className="min-w-full table-auto border-collapse mb-6">
-                    <thead>
-                        <tr className="bg-gray-100 text-center">
-                            <th className="border px-4 py-2">Order ID</th>
-                            <th className="border px-4 py-2">Customer</th>
-                            <th className="border px-4 py-2">Status</th>
-                            <th className="border px-4 py-2">Price</th>
-                            <th className="border px-4 py-2">Date Ordered</th>
-                            <th className="border px-4 py-2">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredOrders.map(order => (
-                            <tr
-                                key={order.id}
-                                className="hover:bg-gray-100 even:bg-gray-50"
-                            >
-                                <td className="border px-4 py-2 text-center">{order.id}</td>
-                                <td className="border px-4 py-2 text-center">{order.user.name}</td>
-                                <td className="border px-4 py-2 text-center">{order.status}</td>
-                                <td className="border px-4 py-2 text-center">${order.price.toFixed(2)}</td>
-                                <td className="border px-4 py-2 text-center">
-                                    {new Date(order.createdAt).toLocaleDateString()}
-                                </td>
-                                <td className="border px-4 py-2 text-center">
-                                    <button
-                                        className="px-4 py-2 text-white text-sm font-semibold rounded bg-orange-500 hover:bg-orange-700"
-                                        onClick={() => handleOrderDetails(order.id)}
-                                    >
-                                        Details
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+        {error && <p className="mb-6 text-center text-red-600 font-semibold">{error}</p>}
 
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={(page) => setCurrentPage(page)}
-            />
+        <div className="flex flex-wrap gap-6 mb-8 items-end">
+          <div className="flex flex-col gap-2">
+            <label className="text-gray-900 font-semibold text-lg">Filter By Status</label>
+            <select
+              className="
+                px-4 py-3 rounded-xl bg-white/30
+                backdrop-blur-md border border-white/40
+                text-gray-900 placeholder-gray-700
+                focus:outline-none focus:ring-2 focus:ring-gray-700/60
+                transition
+              "
+              value={statusFilter}
+              onChange={handleFilterChange}
+            >
+              <option className="bg-white/80 text-gray-900" value="">
+                All
+              </option>
+              {OrderStatus.map((status) => (
+                <option key={status} className="bg-white/80 text-gray-900" value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-2 ml-auto">
+            <label className="text-gray-900 font-semibold text-lg">Search By Status</label>
+            <select
+              className="
+                px-4 py-3 rounded-xl bg-white/30
+                backdrop-blur-md border border-white/40
+                text-gray-900 placeholder-gray-700
+                focus:outline-none focus:ring-2 focus:ring-gray-700/60
+                transition
+              "
+              value={searchStatus}
+              onChange={handleSearchStatusChange}
+            >
+              <option className="bg-white/80 text-gray-900" value="">
+                All
+              </option>
+              {OrderStatus.map((status) => (
+                <option key={status} className="bg-white/80 text-gray-900" value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-    );
-};
 
-export default AdminOrdersPage;
+        <div className="overflow-x-auto rounded-2xl border border-white/40 shadow-inner bg-white/20 backdrop-blur-md">
+          <table className="min-w-full table-auto border-collapse text-gray-900">
+            <thead>
+              <tr className="bg-white/10 text-center select-none text-gray-900">
+                <th className="border border-white/30 px-4 py-3 rounded-tl-2xl">Order ID</th>
+                <th className="border border-white/30 px-4 py-3">Customer</th>
+                <th className="border border-white/30 px-4 py-3">Status</th>
+                <th className="border border-white/30 px-4 py-3">Price</th>
+                <th className="border border-white/30 px-4 py-3">Date Ordered</th>
+                <th className="border border-white/30 px-4 py-3 rounded-tr-2xl">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredOrders.length > 0 ? (
+                filteredOrders.map((order) => (
+                  <tr
+                    key={order.id}
+                    className="
+                      even:bg-white/10
+                      odd:bg-white/5
+                      hover:bg-white/20
+                      cursor-pointer
+                      transition
+                      text-gray-900
+                    "
+                    onClick={() => handleOrderDetails(order.id)}
+                  >
+                    <td className="border border-white/20 px-4 py-3 text-center font-mono">{order.id}</td>
+                    <td className="border border-white/20 px-4 py-3 text-center font-medium">
+                      {order.user?.name || "N/A"}
+                    </td>
+                    <td className="border border-white/20 px-4 py-3 text-center font-semibold">{order.status}</td>
+                    <td className="border border-white/20 px-4 py-3 text-center">${order.price.toFixed(2)}</td>
+                    <td className="border border-white/20 px-4 py-3 text-center">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="border border-white/20 px-4 py-3 text-center">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleOrderDetails(order.id)
+                        }}
+                        className="
+                          px-4 py-2 rounded-xl
+                          bg-white/30 backdrop-blur-md
+                          border border-white/50
+                          text-gray-900 font-semibold
+                          hover:bg-white/50
+                          transition
+                          focus:outline-none focus:ring-2 focus:ring-gray-700
+                        "
+                      >
+                        Details
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-4 py-12 text-center text-gray-700 select-none">
+                    No orders found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {totalPages > 1 && (
+          <div className="mt-8 flex justify-center">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default AdminOrdersPage

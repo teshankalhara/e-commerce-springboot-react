@@ -5,53 +5,50 @@
  * 
  * @author teshan_kalhara
  * @created 6/11/2025
- * @updated 6/11/2025
+ * @updated 6/23/2025
  */
 
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import ApiService from "../../services/ApiService";
+import React, { useState, useEffect } from "react"
+import { useParams } from "react-router-dom"
+import ApiService from "../../services/ApiService"
+import toast from "react-hot-toast"
 
-const OrderStatus = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED"];
+const OrderStatus = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED"]
 
 const AdminOrderDetailsPage = () => {
-  const { itemId } = useParams();
-  const [orderItems, setOrderItems] = useState([]);
-  const [message, setMessage] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState({});
+  const { itemId } = useParams()
+  const [orderItems, setOrderItems] = useState([])
+  const [selectedStatus, setSelectedStatus] = useState({})
 
   useEffect(() => {
-    fetchOrderDetails(itemId);
-  }, [itemId]);
+    fetchOrderDetails(itemId)
+  }, [itemId])
 
   const fetchOrderDetails = async (itemId) => {
     try {
-      const response = await ApiService.getOrderItemById(itemId);
-      setOrderItems(response.orderItemList);
+      const response = await ApiService.getOrderItemById(itemId)
+      setOrderItems(response.orderItemList)
     } catch (error) {
-      console.log(error.message || error);
+      toast.error(error.response?.data?.message || error.message || "Failed to load order details")
     }
-  };
+  }
 
   const handleStatusChange = (orderItemId, newStatus) => {
-    setSelectedStatus({ ...selectedStatus, [orderItemId]: newStatus });
-  };
+    setSelectedStatus({ ...selectedStatus, [orderItemId]: newStatus })
+  }
 
   const handleSubmitStatusChange = async (orderItemId) => {
     try {
-      await ApiService.updateOrderitemStatus(orderItemId, selectedStatus[orderItemId]);
-      setMessage("Order item status was successfully updated.");
-      setTimeout(() => setMessage(""), 3000);
+      await ApiService.updateOrderitemStatus(orderItemId, selectedStatus[orderItemId])
+      toast.success("Order item status was successfully updated")
+      fetchOrderDetails(itemId)
     } catch (error) {
-      setMessage(error.response?.data?.message || error.message || "Unable to update order item status");
+      toast.error(error.response?.data?.message || error.message || "Unable to update order item status")
     }
-  };
+  }
 
   return (
     <div className="w-full max-w-3xl mx-auto p-6 mb-24">
-      {message && (
-        <div className="text-center mb-5 text-green-600 font-semibold">{message}</div>
-      )}
       <h2 className="text-center text-2xl font-bold mb-6">Order Details</h2>
       {orderItems.length ? (
         orderItems.map((orderItem) => (
@@ -119,7 +116,7 @@ const AdminOrderDetailsPage = () => {
         <p className="text-center text-gray-600">Loading order details ...</p>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default AdminOrderDetailsPage;
+export default AdminOrderDetailsPage
