@@ -120,10 +120,7 @@ const ProfilePage = () => {
                 </h3>
                 <button
                   onClick={handleAddressClick}
-                  className="
-                    px-6 py-3 bg-gray-800 text-white rounded-2xl font-semibold
-                    hover:bg-gray-700 shadow-lg transition duration-200
-                  "
+                  className="w-[120px] py-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-gray-900 font-semibold text-sm shadow-md transition hover:bg-white/40 hover:border-white/40 hover:shadow-lg flex items-center justify-center active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-gray-100"
                 >
                   {userInfo.address ? "Edit Address" : "Add Address"}
                 </button>
